@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pet Guard · 宠粮避雷针</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="splashScreen" class="splash" role="dialog" aria-modal="true" aria-labelledby="splashTitle" aria-hidden="false">
+      <div class="splash__inner">
+        <div class="splash__icon" aria-hidden="true">🐾</div>
+        <h1 id="splashTitle" class="splash__title">Pet Guard</h1>
+        <p class="splash__tagline">宠粮避雷针 · 守护毛孩子每一餐</p>
+        <p class="splash__hint">正在准备成分规则与安全等级模型…</p>
+        <div class="splash__chips" aria-hidden="true">
+          <span class="splash__chip">配料扫描</span>
+          <span class="splash__chip">成分评分</span>
+          <span class="splash__chip">避雷提示</span>
+        </div>
+        <div class="splash__progress-row" aria-hidden="true">
+          <span class="splash__mascot" aria-hidden="true" title="小柴">🐕</span>
+          <div class="splash__progress">
+            <div class="splash__progress-track">
+              <div class="splash__progress-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mainApp" class="main-app">
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <header class="site-header">
+      <div class="site-header__inner">
+        <div class="brand">
+          <span class="brand__icon" aria-hidden="true">&#x1F6E1;</span>
+          <span class="brand__name">Pet Guard</span>
+          <span class="brand__tag">宠粮避雷针</span>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="main">
+      <section class="home-hero-dual" aria-label="首屏入口">
+        <article class="home-hero-card" aria-labelledby="home-photo-title">
+          <div class="home-hero-card__icon" aria-hidden="true">📷</div>
+          <h2 id="home-photo-title" class="home-hero-card__title">拍照识成分</h2>
+          <p class="home-hero-card__desc">拍配料表，秒出健康分</p>
+          <button type="button" class="btn btn--primary btn--hero" id="btnPhotoIngredient">
+            📸 拍照 / 上传图片
+          </button>
+          <input type="file" id="ocrFileInput" accept="image/*" capture="environment" hidden />
+        </article>
+        <article class="home-hero-card" aria-labelledby="home-barcode-title">
+          <div class="home-hero-card__icon home-hero-card__icon--scan" aria-hidden="true">🔳</div>
+          <h2 id="home-barcode-title" class="home-hero-card__title">扫码查粮</h2>
+          <p class="home-hero-card__desc">扫条形码，看避雷分析</p>
+          <button type="button" class="btn btn--primary btn--hero" id="btnBarcodeScan">
+            📷 扫码 / 上传条码
+          </button>
+          <input type="file" id="barcodeFileInput" accept="image/*" capture="environment" hidden />
+        </article>
+      </section>
+      <p id="heroActionStatus" class="hero-action-status" role="status" aria-live="polite"></p>
+
+      <section class="panel panel--filters" aria-labelledby="filters-heading">
+        <h2 id="filters-heading" class="panel__title">筛选与说明</h2>
+        <p class="panel__lead panel__lead--tight">
+          首屏左侧为配料表拍照识别，右侧为条形码扫码（均为本地模拟）；图片仅在浏览器内处理，不会上传服务器。
+        </p>
+        <ul class="tips-list">
+          <li>成分分析基于配料原文关键词匹配，仅供参考。</li>
+          <li>安全等级与综合分在下方「成分分析」中展示（拍照与扫码共用同一区域）。</li>
+          <li>最近 5 次扫描显示在页面右下角浮层。</li>
+        </ul>
+      </section>
+
+      <section id="analysisSection" class="panel analysis-panel" hidden aria-labelledby="analysis-heading">
+        <h2 id="analysis-heading" class="panel__title">成分分析</h2>
+        <div class="analysis-head">
+          <div id="analysisGrade" class="analysis-grade" aria-hidden="true">—</div>
+          <div class="analysis-head__text">
+            <p class="analysis-score-line">综合分 <strong id="analysisScore">—</strong> / 100 · 安全等级</p>
+            <p id="analysisSummary" class="analysis-summary"></p>
+          </div>
+        </div>
+        <div class="analysis-columns">
+          <div class="analysis-col">
+            <h3 class="analysis-subtitle analysis-subtitle--good">优秀成分</h3>
+            <ul id="analysisGoodList" class="analysis-list analysis-list--good"></ul>
+          </div>
+          <div class="analysis-col">
+            <h3 class="analysis-subtitle analysis-subtitle--risk">风险成分</h3>
+            <ul id="analysisRiskList" class="analysis-list analysis-list--risk"></ul>
+          </div>
+        </div>
+        <label for="analysisRawText" class="analysis-raw-label">配料原文（可编辑，自动重新分析）</label>
+        <textarea id="analysisRawText" class="analysis-raw-text" rows="5" spellcheck="false"></textarea>
+      </section>
+
+      <aside id="scanHistoryFloat" class="scan-history-float" aria-label="最近识别记录">
+        <p class="scan-history-float__title">最近识别</p>
+        <ul id="scanHistoryFloatList" class="scan-history-float__list"></ul>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <p>Pet Guard · 前端演示 · OCR 为延时模拟，非真实模型</p>
+    </footer>
+    </div>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
