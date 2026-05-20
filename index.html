@@ -4,7 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pet Guard · 宠粮避雷针</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cream: "#FDF5E6",
+              coffee: "#5A3E2B",
+              card: "#F2E0C9",
+            },
+            fontFamily: {
+              kawaii: ['"Nunito"', "Segoe UI", "PingFang SC", "Microsoft YaHei", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
   </head>
   <body>
     <div id="splashScreen" class="splash" role="dialog" aria-modal="true" aria-labelledby="splashTitle" aria-hidden="false">
@@ -29,88 +52,155 @@
       </div>
     </div>
 
-    <div id="mainApp" class="main-app">
-    <a class="skip-link" href="#main">跳到主要内容</a>
+    <div id="mainApp" class="main-app font-kawaii text-coffee bg-cream min-h-screen">
+      <a class="skip-link" href="#main">跳到主要内容</a>
 
-    <header class="site-header">
-      <div class="site-header__inner">
-        <div class="brand">
-          <span class="brand__icon" aria-hidden="true">&#x1F6E1;</span>
-          <span class="brand__name">Pet Guard</span>
-          <span class="brand__tag">宠粮避雷针</span>
+      <main id="main" class="max-w-lg mx-auto px-4 py-6 pb-10 space-y-5">
+        <!-- 巨型拍照卡片 -->
+        <article
+          id="heroPhotoCard"
+          class="rounded-3xl bg-card shadow-sm p-6 sm:p-8 text-center transition-all duration-200"
+          aria-labelledby="home-photo-title"
+        >
+          <button
+            type="button"
+            id="btnPhotoIngredient"
+            class="w-full flex flex-col items-center gap-3 active:scale-95 transition-all duration-200 cursor-pointer"
+            aria-describedby="home-photo-desc"
+          >
+            <svg class="w-20 h-20 sm:w-24 sm:h-24 text-coffee/80" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+              <rect x="8" y="18" width="48" height="36" rx="8" stroke="currentColor" stroke-width="3" />
+              <circle cx="32" cy="36" r="12" stroke="currentColor" stroke-width="3" />
+              <path d="M24 18 L28 10 H36 L40 18" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+              <circle cx="44" cy="26" r="3" fill="currentColor" opacity="0.5" />
+            </svg>
+            <h2 id="home-photo-title" class="text-lg sm:text-xl font-extrabold text-coffee">
+              拍照/相册上传配料表
+            </h2>
+            <p id="home-photo-desc" class="text-sm font-semibold text-coffee/70">点击上传 · 浏览器本地 OCR · 不上传服务器</p>
+          </button>
+          <input type="file" id="ocrFileInput" accept="image/*" capture="environment" hidden />
+          <div id="ocrLoading" class="mt-3 flex flex-col items-center gap-2 py-2" hidden aria-live="polite">
+            <div class="w-9 h-9 rounded-full border-[3px] border-coffee/25 border-t-coffee animate-spin" role="status" aria-label="正在识别"></div>
+            <p class="text-sm font-bold text-coffee/80">正在识别中...</p>
+          </div>
+          <p id="heroActionStatus" class="mt-3 text-sm font-bold text-coffee/60 min-h-[1.25rem]" role="status" aria-live="polite"></p>
+
+          <div id="photoResults" class="mt-5 text-left space-y-4 hidden" aria-live="polite" hidden>
+            <section id="analysisSection" class="rounded-2xl bg-card ring-1 ring-coffee/10 p-4 shadow-sm" hidden aria-labelledby="analysis-heading">
+              <h3 id="analysis-heading" class="text-sm font-extrabold text-coffee mb-3">配料扫描 · 评分 · 避雷</h3>
+              <div class="flex flex-wrap items-start gap-3 mb-3">
+                <div id="analysisGrade" class="analysis-grade" aria-hidden="true">—</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-coffee/80">综合分 <strong id="analysisScore" class="text-coffee">—</strong> / 100</p>
+                  <p id="analysisSummary" class="text-sm font-bold text-coffee mt-1 leading-snug"></p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <p class="text-xs font-extrabold text-green-800 mb-1">优秀成分</p>
+                  <ul id="analysisGoodList" class="analysis-list analysis-list--good text-xs"></ul>
+                </div>
+                <div>
+                  <p class="text-xs font-extrabold text-red-800 mb-1">避雷提示</p>
+                  <ul id="analysisRiskList" class="analysis-list analysis-list--risk text-xs"></ul>
+                </div>
+              </div>
+              <label for="analysisRawText" class="block text-xs font-bold text-coffee/70 mt-3 mb-1">识别原文（可编辑后自动重评）</label>
+              <textarea id="analysisRawText" class="w-full rounded-xl bg-cream px-3 py-2 text-xs font-semibold text-coffee min-h-[4rem] shadow-sm outline-none focus:ring-2 focus:ring-coffee/15" rows="4" spellcheck="false"></textarea>
+            </section>
+            <div id="nutritionBlocks" class="space-y-4" hidden>
+            <div class="rounded-2xl bg-card ring-1 ring-coffee/10 p-4 shadow-sm">
+              <p class="text-sm font-bold text-coffee/80 mb-1">碳水化合物脱水解密</p>
+              <p class="text-3xl font-black text-coffee"><span id="carbPercent">—</span>%</p>
+              <div class="mt-2 h-3 rounded-full bg-cream overflow-hidden">
+                <div id="carbProgressBar" class="h-full rounded-full bg-coffee/70 transition-all duration-500" style="width: 0%"></div>
+              </div>
+              <p id="carbFormulaHint" class="mt-2 text-xs font-semibold text-coffee/60 leading-relaxed"></p>
+            </div>
+            <div class="rounded-2xl bg-card ring-1 ring-coffee/10 p-4 shadow-sm">
+              <label for="petWeightFeed" class="text-sm font-bold text-coffee/80">宠物体重 (kg)</label>
+              <input
+                type="number"
+                id="petWeightFeed"
+                min="0.1"
+                step="0.1"
+                placeholder="例如 4.5"
+                class="mt-1 w-full rounded-xl border-0 bg-white/70 px-3 py-2 text-coffee font-bold shadow-sm focus:ring-2 focus:ring-coffee/20 outline-none"
+              />
+              <p id="feedingResult" class="mt-3 text-xl font-black text-coffee">建议每日喂食 — 克</p>
+              <p class="text-xs font-semibold text-coffee/55 mt-1">基于 NRC/FEDIAF：RER × 因子 ÷ 估算代谢能 (kcal/100g)</p>
+            </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 四小卡 2×2 -->
+        <div class="grid grid-cols-2 gap-4" role="list">
+          <button
+            type="button"
+            class="tool-card rounded-2xl bg-card shadow-sm p-4 min-h-[7.5rem] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all duration-200 text-center"
+            data-panel="health"
+            aria-expanded="false"
+            aria-controls="panelHealth"
+          >
+            <span class="text-2xl" aria-hidden="true">🩺</span>
+            <span class="font-extrabold text-sm sm:text-base">健康自检</span>
+            <span class="text-xs font-bold text-coffee/60">冷静分诊</span>
+          </button>
+          <button
+            type="button"
+            class="tool-card rounded-2xl bg-card shadow-sm p-4 min-h-[7.5rem] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all duration-200 text-center"
+            data-panel="emergency"
+          >
+            <span class="text-2xl" aria-hidden="true">🚨</span>
+            <span class="font-extrabold text-sm sm:text-base">深夜急诊</span>
+            <span class="text-xs font-bold text-coffee/60">消防斧直达</span>
+          </button>
+          <button
+            type="button"
+            class="tool-card rounded-2xl bg-card shadow-sm p-4 min-h-[7.5rem] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all duration-200 text-center"
+            data-panel="water"
+          >
+            <span class="text-2xl" aria-hidden="true">💧</span>
+            <span class="font-extrabold text-sm sm:text-base">水粮计算</span>
+            <span class="text-xs font-bold text-coffee/60">饮水追踪</span>
+          </button>
+          <button
+            type="button"
+            class="tool-card rounded-2xl bg-card shadow-sm p-4 min-h-[7.5rem] flex flex-col items-center justify-center gap-1 active:scale-95 transition-all duration-200 text-center"
+            data-panel="toxic"
+          >
+            <span class="text-2xl" aria-hidden="true">💊</span>
+            <span class="font-extrabold text-sm sm:text-base">毒性药量</span>
+            <span class="text-xs font-bold text-coffee/60">安全天平</span>
+          </button>
+        </div>
+
+        <!-- 展开面板区 -->
+        <div id="panelHealth" class="panel-expand rounded-2xl bg-card shadow-sm p-4" hidden></div>
+        <div id="panelEmergency" class="panel-expand rounded-2xl bg-card shadow-sm p-4" hidden></div>
+        <div id="panelWater" class="panel-expand rounded-2xl bg-card shadow-sm p-4" hidden></div>
+        <div id="panelToxic" class="panel-expand rounded-2xl bg-card shadow-sm p-4" hidden></div>
+      </main>
+
+      <footer class="text-center text-xs font-bold text-coffee/50 pb-6 px-4">
+        Pet Guard · 纯前端科学工具箱 · 计算结果仅供参考
+      </footer>
+
+      <!-- 急症警报 -->
+      <div id="modalEmergencyAlert" class="modal-overlay" hidden role="alertdialog" aria-modal="true" aria-labelledby="emergencyAlertTitle">
+        <div class="modal-alert rounded-3xl bg-card max-w-sm w-full p-6 shadow-lg mx-4 text-coffee">
+          <h2 id="emergencyAlertTitle" class="text-lg font-black text-red-700">⚠️ 属于兽医临床急症</h2>
+          <p class="mt-2 text-sm font-bold text-coffee">请立即前往深夜急诊！</p>
+          <button type="button" id="btnCloseEmergencyAlert" class="mt-4 w-full rounded-2xl bg-red-600 text-white font-extrabold py-3 active:scale-95 transition-all duration-200">
+            我知道了
+          </button>
         </div>
       </div>
-    </header>
-
-    <main id="main" class="main">
-      <section class="home-hero-dual" aria-label="首屏入口">
-        <article class="home-hero-card" aria-labelledby="home-photo-title">
-          <div class="home-hero-card__icon" aria-hidden="true">📷</div>
-          <h2 id="home-photo-title" class="home-hero-card__title">拍照识成分</h2>
-          <p class="home-hero-card__desc">拍配料表，秒出健康分</p>
-          <button type="button" class="btn btn--primary btn--hero" id="btnPhotoIngredient">
-            📸 拍照 / 上传图片
-          </button>
-          <input type="file" id="ocrFileInput" accept="image/*" hidden />
-        </article>
-        <article class="home-hero-card" aria-labelledby="home-barcode-title">
-          <div class="home-hero-card__icon home-hero-card__icon--scan" aria-hidden="true">🔳</div>
-          <h2 id="home-barcode-title" class="home-hero-card__title">扫码查粮</h2>
-          <p class="home-hero-card__desc">扫条形码，看避雷分析</p>
-          <button type="button" class="btn btn--primary btn--hero" id="btnBarcodeScan">
-            📷 扫码 / 上传条码
-          </button>
-          <input type="file" id="barcodeFileInput" accept="image/*" hidden />
-        </article>
-      </section>
-      <p id="heroActionStatus" class="hero-action-status" role="status" aria-live="polite"></p>
-
-      <section class="panel panel--filters" aria-labelledby="filters-heading">
-        <h2 id="filters-heading" class="panel__title">筛选与说明</h2>
-        <p class="panel__lead panel__lead--tight">
-          首屏左侧为配料表拍照识别，右侧为条形码扫码（均为本地模拟）；图片仅在浏览器内处理，不会上传服务器。
-        </p>
-        <ul class="tips-list">
-          <li>成分分析基于配料原文关键词匹配，仅供参考。</li>
-          <li>安全等级与综合分在下方「成分分析」中展示（拍照与扫码共用同一区域）。</li>
-          <li>最近 5 次扫描显示在页面右下角浮层。</li>
-        </ul>
-      </section>
-
-      <section id="analysisSection" class="panel analysis-panel" hidden aria-labelledby="analysis-heading">
-        <h2 id="analysis-heading" class="panel__title">成分分析</h2>
-        <div class="analysis-head">
-          <div id="analysisGrade" class="analysis-grade" aria-hidden="true">—</div>
-          <div class="analysis-head__text">
-            <p class="analysis-score-line">综合分 <strong id="analysisScore">—</strong> / 100 · 安全等级</p>
-            <p id="analysisSummary" class="analysis-summary"></p>
-          </div>
-        </div>
-        <div class="analysis-columns">
-          <div class="analysis-col">
-            <h3 class="analysis-subtitle analysis-subtitle--good">优秀成分</h3>
-            <ul id="analysisGoodList" class="analysis-list analysis-list--good"></ul>
-          </div>
-          <div class="analysis-col">
-            <h3 class="analysis-subtitle analysis-subtitle--risk">风险成分</h3>
-            <ul id="analysisRiskList" class="analysis-list analysis-list--risk"></ul>
-          </div>
-        </div>
-        <label for="analysisRawText" class="analysis-raw-label">配料原文（可编辑，自动重新分析）</label>
-        <textarea id="analysisRawText" class="analysis-raw-text" rows="5" spellcheck="false"></textarea>
-      </section>
-
-      <aside id="scanHistoryFloat" class="scan-history-float" aria-label="最近识别记录">
-        <p class="scan-history-float__title">最近识别</p>
-        <ul id="scanHistoryFloatList" class="scan-history-float__list"></ul>
-      </aside>
-    </main>
-
-    <footer class="site-footer">
-      <p>Pet Guard · 前端演示 · OCR 为延时模拟，非真实模型</p>
-    </footer>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
     <script src="script.js" defer></script>
   </body>
 </html>

@@ -1,10 +1,13 @@
 /* Pet Guard — Shiba cream theme */
 
 :root {
-  --bg: #fff2cc;
-  --surface: #ffffff;
-  --text: #4a2e1e;
-  --muted: #8a6a52;
+  --bg: #fdf5e6;
+  --surface: #d9c5a7;
+  --text: #5a3e2b;
+  --card-bg: #d9c5a7;
+  --card-text: #2c1a0e;
+  --card-text-muted: #3e2723;
+  --muted: #8a735f;
   --border: #e8d4bc;
   --accent: #c27a3a; /* 焦糖棕 #C27A3A */
   --accent-hover: #d48a4a;
@@ -27,6 +30,11 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+html,
+body {
+  background-color: #fdf5e6;
 }
 
 body {
@@ -633,13 +641,21 @@ body {
 
 .main-app {
   opacity: 0;
-  transition: opacity 0.55s ease;
+  visibility: hidden;
+  transition: opacity 0.55s ease, visibility 0.55s ease;
   pointer-events: none;
 }
 
 .main-app.main-app--visible {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+}
+
+#splashScreen.splash--hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Splash — cream + brown, no harsh black */
@@ -769,7 +785,7 @@ body {
 
 .splash__progress-track {
   height: 8px;
-  background: #f0e0a0;
+  background: #e8d4b8;
   border-radius: 999px;
   overflow: hidden;
 }
@@ -1116,4 +1132,157 @@ body {
   color: var(--muted);
   margin: 0;
   padding: 0.15rem 0;
+}
+
+/* ——— 主界面 2.0（启动页样式上方保持不变） ——— */
+
+/* 卡片外：页面级文字保持深灰咖 #5A3E2B */
+#mainApp {
+  color: var(--text);
+}
+
+#mainApp > footer {
+  color: rgba(90, 62, 43, 0.5) !important;
+}
+
+/* 卡片背景：浅拿铁 #D9C5A7（覆盖 Tailwind bg-card） */
+#mainApp #heroPhotoCard,
+#mainApp .tool-card,
+#mainApp .panel-expand,
+#mainApp #photoResults .bg-card,
+#mainApp .modal-alert.bg-card,
+#mainApp .bg-card {
+  background-color: var(--card-bg) !important;
+}
+
+/* 卡片内：深巧克力文字，保证对比度 */
+#mainApp #heroPhotoCard,
+#mainApp .tool-card,
+#mainApp .panel-expand,
+#mainApp .modal-alert.bg-card {
+  color: var(--card-text);
+}
+
+#mainApp #heroPhotoCard [class*="text-coffee"],
+#mainApp .tool-card [class*="text-coffee"],
+#mainApp .panel-expand [class*="text-coffee"],
+#mainApp .modal-alert.bg-card [class*="text-coffee"] {
+  color: var(--card-text) !important;
+}
+
+#mainApp #heroPhotoCard [class*="text-coffee/"],
+#mainApp .tool-card [class*="text-coffee/"],
+#mainApp .panel-expand [class*="text-coffee/"],
+#mainApp .modal-alert.bg-card [class*="text-coffee/"] {
+  color: var(--card-text-muted) !important;
+}
+
+#mainApp #heroPhotoCard svg {
+  color: var(--card-text-muted) !important;
+}
+
+#mainApp #heroPhotoCard input,
+#mainApp #heroPhotoCard select,
+#mainApp .panel-expand input,
+#mainApp .panel-expand select,
+#mainApp .panel-expand textarea {
+  color: var(--card-text) !important;
+}
+
+#mainApp #carbProgressBar {
+  background-color: var(--card-text) !important;
+}
+
+/* 卡片内选中态按钮：深底 + 奶油字 */
+#mainApp .panel-expand .bg-coffee,
+#mainApp .panel-expand .bg-coffee.text-cream {
+  background-color: var(--card-text) !important;
+  color: var(--bg) !important;
+}
+
+#mainApp .panel-expand .bg-coffee [class*="text-cream"] {
+  color: var(--bg) !important;
+}
+
+/* 急症/毒性结果色保留（不套用卡片字色） */
+#mainApp .text-red-700,
+#mainApp .text-red-800,
+#mainApp #modalEmergencyAlert .text-red-700 {
+  color: #b91c1c !important;
+}
+
+#mainApp .bg-green-100 {
+  color: #166534 !important;
+}
+
+#mainApp .bg-amber-100 {
+  color: #92400e !important;
+}
+
+#mainApp .bg-red-100 {
+  color: #991b1b !important;
+}
+
+#mainApp .panel-expand .water-cup__glass,
+#mainApp .panel-expand .water-cup__glass::before {
+  border-color: var(--card-text);
+}
+
+#photoResults:not([hidden]) {
+  display: block;
+}
+
+.panel-expand[hidden] {
+  display: none !important;
+}
+
+#photoResults[hidden] {
+  display: none !important;
+}
+
+.water-cup__glass {
+  position: relative;
+  width: 5rem;
+  height: 7rem;
+  margin: 0 auto;
+  border: 3px solid #5a3e2b;
+  border-radius: 0 0 1.25rem 1.25rem;
+  background: rgba(253, 245, 230, 0.6);
+  overflow: hidden;
+}
+
+.water-cup__glass::before {
+  content: "";
+  position: absolute;
+  top: -0.65rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.5rem;
+  height: 0.75rem;
+  border: 3px solid #5a3e2b;
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.water-cup__fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #9ecae8 0%, #6baed6 100%);
+  transition: height 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.tox-alert {
+  animation: toxPulse 1s ease-in-out infinite;
+}
+
+@keyframes toxPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(185, 28, 28, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(185, 28, 28, 0);
+  }
 }
